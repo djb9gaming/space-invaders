@@ -1,0 +1,124 @@
+import pygame #bring in module to handle graphics, input,etc 
+
+pygame.init() #set up pygame
+pygame.display.set_caption("space invader!") # sets the window title
+screen = pygame.display.set_mode((800,800)) # creates game screen
+clock = pygame.time.Clock() #set up clock
+
+gameover = False #varible to run our game loop
+#player variables
+xpos = 400
+ypos = 750
+moveLeft = False             
+            
+#-------------------------------------------------------------------------------------          
+class Alien:
+    def __init__(self, xpos, ypos):
+        self.xpos = xpos
+        self.ypos = ypos
+        self.isAlive = True
+    def draw(self):
+            pygame.draw.rect(screen, (250, 250, 250), (self.xpos, self.ypos, 40, 40))
+    def move(self):
+        if timer%100==0:
+            self.xpos+=50
+            print("moving right")
+                
+armada = [] # creat emtpy list
+for i in range (2): #handles rows
+        for j in range (4): #handles colums
+            armada.append(Alien(j*60+50, i*50+50)) # push alien object into list
+
+#---------------------------------------------------------------
+class bullet:
+    def__init__(self, xpos, ypos):
+        self.xpos = xpos
+        self.ypos = ypos
+        self.isAlive = False
+    def move(self, xpos, ypos):
+        if self.isAlive == True; #only shoot live bullets
+            self.ypos-=5 #move up when shot
+        if self.ypos < 0; #check if youve hit the top of the screen
+            self.isAlive = False #set to dead
+            self.xpos = xpos #reset to player position
+            self.ypos = ypos
+            
+    def draw(self):
+        pygame.draw.rect(screen, (250, 250, 250), (self.xpos, self.ypos, 3, 20))
+#instaniate bullet object
+bullet = Bullet(xpos+28, ypos)#create bullet object and pass player position
+#-------------------------------------------------------------------------------------      
+
+walls = [] #create empty list
+
+while not gameover: # GAME LOOP----------------------------------
+    clock.tick(61) #fps
+    #game varibles----------------------------------------
+    timer = 0;
+    
+    #input section-----------------------------
+    for event in pygame.event.get():
+        if event.type == pygame.quit:
+            gameover = True #quit game if x is pressed in the top corner
+                
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                moveLeft = True
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                moveLeft = False
+    #physics section----------------------------------------------
+        
+    #player movement
+    if moveLeft == True:
+       vx =- 3
+    else:
+       vx = 0
+       
+    #move the alines   
+    for i in range (len(armada)):
+        armada[i].move()
+            
+
+    #shoot bullet
+    if shoot == True: #cehck keyboard input
+        bullet.isAlive = True
+        
+        
+    if bullet.isAlive == True:
+        bullet.move(xpos+28, ypos)
+        
+    else: #make bullet follow player when not moving up
+        bullet.xpos = xpos + 28
+        bullet.ypos = ypos
+                    
+                    
+    # update player position
+    xpos += vx
+    
+    
+    # Render section---------------------------------------------
+    screen.fill((0,0,0)) #wipe screen so it doesnt smear
+    a1 = Alien(400, 400) #instantiate alien object
+    a1.draw() # draw object
+    #draw all aliens in list:
+    for i in range (len(armada)):
+        armada[i].draw()
+    screen.fill((255,255,255)) #wipe screen so it doesnt smear
+        
+   b1 = bullet(100, 100) #instanitate alien object
+   b1.draw() #draw object
+   for i in range (len(armada)):
+       armada[i].draw()
+   screen.fill((155, 155, 155)) #wipe screen so it doesnt smear
+    
+    
+
+        
+    pygame.draw.rect(screen, (200, 200, 100), ( 400, 750, 60, 20)) #draw player
+    pygame.display.flip() #this flips the buffer (memory) where stuff has been "drawn" to the actual screen
+        
+#end game loop ---------------------------------------------
+        
+        
+pygame.quit()
